@@ -5,10 +5,34 @@ import { Skeleton } from "@/components/ui/misc";
 import { readPendingEmail } from "@/lib/auth/pending-email";
 import { ROUTES } from "@/lib/auth/routes";
 import { ResendForm } from "./resend-form";
+import { verifyEmailAction } from "../actions"; // ✅ Action import kiya
 
 export const metadata = { title: "Confirm your email" };
 
-export default function VerifyEmailPage() {
+// Next.js 15 compatibility ke liye async function banaya
+export default async function VerifyEmailPage({ searchParams }) {
+  const params = await searchParams;
+  const token = params?.token;
+
+  // ✅ Agar URL me token hai, toh verification handle karo
+  if (token) {
+    return (
+      <AuthCard
+        title="Email Verification"
+        footer={
+          <>
+            Already verified? <Link href={ROUTES.login}>Log in</Link>
+          </>
+        }
+      >
+        <Suspense fallback={<Skeleton className="h-40" />}>
+          <VerifyTokenBody token={token} />
+        </Suspense>
+      </AuthCard>
+    );
+  }
+
+  // ✅ Agar token nahi hai, toh normal "check your email" message dikhao
   return (
     <AuthCard
       title="Confirm your email"
@@ -25,6 +49,58 @@ export default function VerifyEmailPage() {
   );
 }
 
+// ✅ Naya component jo actual token verify karta hai
+async function VerifyTokenBody({ token }) {
+  const result = await verifyEmailAction(token);
+
+  if (result.status === "success") {
+    return (
+      <div className="space-y-5 text-center">
+        <div className="text-5xl">🎉</div>
+        <p className="text-lg font-semibold text-green-600">
+          Email Successfully Verified!
+        </p>
+        <p className="text-sm text-ink-muted">
+          {result.message} You can now log in to your account.
+        </p>
+        <Link 
+          href={ROUTES.login} 
+          className="inline-block w-full rounded-md bg-brand px-4 py-2 text-center text-sm font-semibold text-white hover:bg-brand/90 transition"
+        >
+          Log in now
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-5 text-center">
+      <div className="text-5xl">😕</div>
+      <p className="text-lg font-semibold text-danger">
+        Verification Failed
+      </p>
+      <p className="text-sm text-ink-muted">
+        {result.message}
+      </p>
+      <div className="flex flex-col gap-2">
+        <Link 
+          href={ROUTES.login} 
+          className="inline-block w-full rounded-md bg-gray-200 px-4 py-2 text-center text-sm font-semibold text-gray-800 hover:bg-gray-300 transition"
+        >
+          Go to Log in
+        </Link>
+        <Link 
+          href={ROUTES.register} 
+          className="inline-block w-full rounded-md bg-brand px-4 py-2 text-center text-sm font-semibold text-white hover:bg-brand/90 transition"
+        >
+          Register Again
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+// ✅ Tumhara original component, bilkul waisa hi rakha hai
 async function VerifyEmailBody() {
   const email = await readPendingEmail();
   return (
