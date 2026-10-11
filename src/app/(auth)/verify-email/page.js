@@ -1,20 +1,44 @@
 import Link from "next/link";
+import { Suspense } from "react";
+
 import { AuthCard } from "@/components/forms/auth-card";
 import { ROUTES } from "@/lib/auth/routes";
+import { readPendingEmail } from "@/lib/auth/pending-email";
+
 import { ResendForm } from "./resend-form";
 import { verifyEmailAction } from "../actions";
-import { readPendingEmail } from "@/lib/auth/pending-email";
 
 export const metadata = {
   title: "Confirm your email",
 };
 
-export default async function VerifyEmailPage({ searchParams }) {
+function VerifyEmailFallback() {
+  return (
+    <AuthCard title="Confirm your email">
+      <div className="space-y-3 text-center">
+        <p className="text-sm text-ink-muted">
+          Loading email verification...
+        </p>
+      </div>
+    </AuthCard>
+  );
+}
+
+export default function VerifyEmailPage({ searchParams }) {
+  return (
+    <Suspense fallback={<VerifyEmailFallback />}>
+      <VerifyEmailContent searchParams={searchParams} />
+    </Suspense>
+  );
+}
+
+async function VerifyEmailContent({ searchParams }) {
   const params = await searchParams;
+
   const token =
     typeof params?.token === "string" ? params.token : "";
 
-  // Verify email when a token is present.
+  // Verify the email only when a token is provided.
   if (token) {
     try {
       const result = await verifyEmailAction(token);
@@ -137,7 +161,7 @@ export default async function VerifyEmailPage({ searchParams }) {
     }
   }
 
-  // Read the pending email when no token is provided.
+  // Read the pending email when no token is present.
   let email = "";
 
   try {
