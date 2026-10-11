@@ -9,15 +9,12 @@ export const metadata = {
   title: "Confirm your email",
 };
 
-export const dynamic = "force-dynamic";
-
 export default async function VerifyEmailPage({ searchParams }) {
   const params = await searchParams;
-  const token = typeof params?.token === "string" ? params.token : "";
+  const token =
+    typeof params?.token === "string" ? params.token : "";
 
-  let email = "";
-
-  // Verify the email only when a token is provided.
+  // Verify email when a token is present.
   if (token) {
     try {
       const result = await verifyEmailAction(token);
@@ -41,7 +38,8 @@ export default async function VerifyEmailPage({ searchParams }) {
               </p>
 
               <p className="text-sm text-ink-muted">
-                {result.message || "Your email has been verified successfully."}
+                {result.message ||
+                  "Your email has been verified successfully."}
               </p>
 
               <Link
@@ -73,7 +71,8 @@ export default async function VerifyEmailPage({ searchParams }) {
             </p>
 
             <p className="text-sm text-ink-muted">
-              {result?.message || "The verification link is invalid or expired."}
+              {result?.message ||
+                "The verification link is invalid or expired."}
             </p>
 
             <div className="flex flex-col gap-2">
@@ -113,8 +112,8 @@ export default async function VerifyEmailPage({ searchParams }) {
             </p>
 
             <p className="text-sm text-ink-muted">
-              Something went wrong while verifying your email. Please try again
-              or request a new verification link.
+              Something went wrong while verifying your email.
+              Please request a new verification link or try again.
             </p>
 
             <div className="flex flex-col gap-2">
@@ -138,7 +137,9 @@ export default async function VerifyEmailPage({ searchParams }) {
     }
   }
 
-  // Read the pending email when no verification token is present.
+  // Read the pending email when no token is provided.
+  let email = "";
+
   try {
     email = (await readPendingEmail()) || "";
   } catch (error) {
@@ -171,8 +172,8 @@ export default async function VerifyEmailPage({ searchParams }) {
         <ul className="list-disc space-y-1 pl-5 text-sm text-ink-muted">
           <li>The link works once and expires after a while.</li>
           <li>
-            Nothing after a few minutes? Check your spam folder, then request a
-            new link below.
+            Nothing after a few minutes? Check your spam folder,
+            then request a new link below.
           </li>
         </ul>
 
