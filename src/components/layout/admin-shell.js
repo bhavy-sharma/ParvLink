@@ -42,7 +42,7 @@ export function AdminShell({ email, roleLabel, isSuperAdmin, hasStudentProfile, 
             <PairMark onDark />
             <span>
               Admin
-              <span className="sr-only"> — Campus Partner Finder</span>
+              <span className="sr-only"> — ParvLink</span>
             </span>
           </Link>
           <div className="lg:hidden">

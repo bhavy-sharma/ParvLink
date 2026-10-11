@@ -438,7 +438,7 @@ export function ChatScreen({ chat, initialMessages, initialHasEarlier, initialLo
               Stay safe: do not share passwords, OTPs, bank or payment details, or your home address with someone you do not know well.
             </summary>
             <p className="mt-1.5">
-              Only you and {name} can open this conversation. Messages are stored on Campus Partner Finder’s servers so that both of you can read them
+              Only you and {name} can open this conversation. Messages are stored on ParvLink’s servers so that both of you can read them
               later; they are not end-to-end encrypted. If either of you reports the conversation, that person can choose to share recent messages
               with moderators. Messages cannot be edited or deleted after sending.
             </p>

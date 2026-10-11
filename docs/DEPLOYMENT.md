@@ -132,7 +132,7 @@ The app sends exactly two kinds of email, through Nodemailer: **confirm your ema
    SMTP_PORT=587
    SMTP_USER=…
    SMTP_PASS=…
-   EMAIL_FROM="Campus Partner Finder <no-reply@your-domain.example>"
+   EMAIL_FROM="ParvLink <no-reply@your-domain.example>"
    ```
 
 4. Check: `npm run mail:check -- you@example.org` connects, logs in and sends one test message. It prints what failed in plain words and never prints the password.

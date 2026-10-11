@@ -3,7 +3,7 @@ import { AdminShell } from "@/components/layout/admin-shell";
 import { LoadingRegion, Skeleton } from "@/components/ui/misc";
 import { getAdminScope, getMyProfile } from "@/lib/auth/session";
 
-export const metadata = { title: { default: "Admin", template: "%s · Admin · Campus Partner Finder" } };
+export const metadata = { title: { default: "Admin", template: "%s · Admin · ParvLink" } };
 
 export default function AdminLayout({ children }) {
   // The whole admin chrome renders behind the role check — none of it is in

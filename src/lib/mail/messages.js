@@ -1,7 +1,7 @@
 // The emails this app sends. Plain wording, a text part and a simple HTML part.
 // The link is the only variable; nothing a user typed is put into an email.
 
-const APP_NAME = "Campus Partner Finder";
+const APP_NAME = "ParvLink";
 
 const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[ch]);
 

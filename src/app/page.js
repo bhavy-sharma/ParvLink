@@ -35,7 +35,7 @@ export default function LandingPage() {
           <div>
             <h1 className="text-5xl font-extrabold sm:text-6xl lg:text-7xl">Don’t sit the event out for want of a partner.</h1>
             <p className="mt-6 max-w-xl text-lg text-ink-muted">
-              Hackathons, duets, quizzes, debates: most college events need two or more. Campus Partner Finder is where students find each other in time to enter.
+              Hackathons, duets, quizzes, debates: most college events need two or more. ParvLink is where students find each other in time to enter.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <ButtonLink href={ROUTES.register} size="lg">
@@ -46,6 +46,26 @@ export default function LandingPage() {
               </ButtonLink>
             </div>
             <p className="mt-4 text-sm text-ink-muted">Free for students. In beta: your college has to be listed before you can create a profile.</p>
+
+            {/* 🌟 PREMIUM CREATOR CREDITS (UPPER SECTION, BIG & CLEAN) 🌟 */}
+            <div className="mt-12 border-t border-line pt-8">
+              <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-12">
+                <div className="flex flex-col">
+                  <span className="text-xs font-bold uppercase tracking-[0.2em] text-ink-muted">Design</span>
+                  <span className="text-3xl font-black text-ink sm:text-4xl lg:text-5xl">
+                    Gaurav Pratap Singh
+                  </span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-xs font-bold uppercase tracking-[0.2em] text-ink-muted">Build</span>
+                  <span className="text-3xl font-black text-ink sm:text-4xl lg:text-5xl">
+                    Bhavy Sharma
+                  </span>
+                </div>
+              </div>
+            </div>
+            {/* ----------------------------------------------------------- */}
+
           </div>
 
           <div className="mx-auto w-full max-w-md rounded-panel bg-ink p-5 text-white sm:p-7">

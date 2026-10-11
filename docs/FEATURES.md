@@ -1,6 +1,6 @@
 # Features, rules and design decisions
 
-How each part of Campus Partner Finder behaves and where its code lives. Set-up is in [DEPLOYMENT.md](./DEPLOYMENT.md), going live in [LAUNCH.md](./LAUNCH.md), the test suites in [TESTING.md](./TESTING.md) and the security model in [SECURITY.md](../SECURITY.md).
+How each part of ParvLink behaves and where its code lives. Set-up is in [DEPLOYMENT.md](./DEPLOYMENT.md), going live in [LAUNCH.md](./LAUNCH.md), the test suites in [TESTING.md](./TESTING.md) and the security model in [SECURITY.md](../SECURITY.md).
 
 - [Accounts, privacy and feedback (Phase 6)](#accounts-privacy-and-feedback-phase-6)
 - [Events (Phase 2)](#events-phase-2)

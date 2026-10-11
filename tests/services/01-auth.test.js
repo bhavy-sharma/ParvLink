@@ -19,7 +19,7 @@ const lastMail = (email) => sink.for(email).at(-1);
 
 beforeAll(async () => {
   sink = await startMailSink();
-  Object.assign(process.env, { SMTP_HOST: "127.0.0.1", SMTP_PORT: String(sink.port), EMAIL_FROM: "Campus Partner Finder <no-reply@campus.test>", SMTP_USER: "", SMTP_PASS: "" });
+  Object.assign(process.env, { SMTP_HOST: "127.0.0.1", SMTP_PORT: String(sink.port), EMAIL_FROM: "ParvLink <no-reply@campus.test>", SMTP_USER: "", SMTP_PASS: "" });
   await db.start();
 });
 afterAll(async () => {
@@ -54,7 +54,7 @@ describe("registration", () => {
     const email = address();
     await auth.registerAccount({ email, password: PASSWORD, ip: "10.0.0.1" });
     const mail = lastMail(email);
-    expect(mail.subject).toBe("Confirm your email for Campus Partner Finder");
+    expect(mail.subject).toBe("Confirm your email for ParvLink");
     expect(mail.from).toContain("no-reply@campus.test");
     expect(mail.link).toMatch(/^http:\/\/app\.test\/auth\/confirm\?token=[A-Za-z0-9_-]{43}&type=email$/);
     expect(mail.html).toContain("Confirm my email");
@@ -305,7 +305,7 @@ describe("forgotten password", () => {
     expect(await auth.requestPasswordReset({ email: unknown, ip: "10.0.0.1" })).toBe("ok");
     expect(sink.for(unknown)).toHaveLength(0);
     const mail = lastMail(email);
-    expect(mail.subject).toBe("Choose a new password for Campus Partner Finder");
+    expect(mail.subject).toBe("Choose a new password for ParvLink");
     expect(mail.link).toMatch(/\/auth\/confirm\?token=[A-Za-z0-9_-]{43}&type=recovery$/);
     expect(JSON.stringify(await AuthToken.find({ kind: "reset_password" }).lean())).not.toContain(tokenIn(mail));
   });

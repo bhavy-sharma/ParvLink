@@ -201,7 +201,7 @@ export function EventForm({ mode, eventId = null, hostCollege = null, hostColleg
                 defaultChecked={(values.collegesMode ?? "host") === "all"}
                 onChange={() => setCollegesMode("all")}
                 label="All colleges"
-                description="Every open college on Campus Partner Finder, including ones added later."
+                description="Every open college on ParvLink, including ones added later."
               />
             </div>
             {errors.collegesMode || errors.collegeIds ? (

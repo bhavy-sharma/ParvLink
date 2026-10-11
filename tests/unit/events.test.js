@@ -170,7 +170,7 @@ describe("what students see", () => {
       { label: "Years", text: "1st year or 3rd year." },
     ]);
     expect(describeEligibility({ college_id: HOST, minimum_age: 18, eligibility_rules: { colleges: { mode: "all" }, courses: [], study_years: [] } }, names)).toEqual([
-      { label: "Colleges", text: "Students of every college on Campus Partner Finder." },
+      { label: "Colleges", text: "Students of every college on ParvLink." },
       { label: "Age", text: "18 or older on the day of the event." },
     ]);
   });

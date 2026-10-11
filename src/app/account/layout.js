@@ -7,7 +7,7 @@ import { LoadingRegion, Skeleton } from "@/components/ui/misc";
 import { homeForRole } from "@/lib/auth/routes";
 import { getCurrentRole, requireUser } from "@/lib/auth/session";
 
-export const metadata = { title: { default: "Your account", template: "%s · Campus Partner Finder" } };
+export const metadata = { title: { default: "Your account", template: "%s · ParvLink" } };
 
 // Account pages (delete account, feedback) are open to every signed-in person:
 // students, suspended students and admins alike. That is why they sit outside

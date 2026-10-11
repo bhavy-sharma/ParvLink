@@ -52,7 +52,7 @@ test("registering sends the user to 'confirm your email' and creates a plain stu
   // One confirmation email went out, through SMTP, with a link to this site.
   const mails = await mailFor(email);
   expect(mails).toHaveLength(1);
-  expect(mails[0].subject).toBe("Confirm your email for Campus Partner Finder");
+  expect(mails[0].subject).toBe("Confirm your email for ParvLink");
   expect(mails[0].from).toContain("no-reply@campus.test");
   expect(mails[0].link).toMatch(/\/auth\/confirm\?token=[A-Za-z0-9_-]{43}&type=email$/);
   // The database holds a hash of the token, not the token.
@@ -147,7 +147,7 @@ test("only open colleges can be chosen", async () => {
 
 test("profile creation rejects an under-age date of birth and keeps what was typed", async () => {
   await fillOnboarding(page, { firstName: "Asha", college, dob: dobForAge(16) });
-  await expect(page.getByText("You must be 18 or older to use Campus Partner Finder.")).toBeVisible();
+  await expect(page.getByText("You must be 18 or older to use ParvLink.")).toBeVisible();
   await expect(page).toHaveURL(/\/onboarding$/);
   await expect(page.getByLabel("First name")).toHaveValue("Asha");
   await expect(page.getByLabel("College").locator("option:checked")).toHaveText(college);

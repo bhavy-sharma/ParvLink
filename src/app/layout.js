@@ -6,8 +6,8 @@ import Script from "next/script";
 
 export const metadata = {
   title: {
-    default: "Campus Partner Finder",
-    template: "%s · Campus Partner Finder",
+    default: "ParvLink",
+    template: "%s · Parv Link",
   },
   description: "Find a partner or a team for events at your college.",
 };

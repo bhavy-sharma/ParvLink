@@ -24,7 +24,7 @@ export function EventCard({ event, headingLevel = "h3" }) {
           {event.title}
         </Link>
       </Heading>
-      <p className="mt-1 text-sm text-ink-muted">Hosted by {event.colleges?.name ?? "a college on Campus Partner Finder"}</p>
+      <p className="mt-1 text-sm text-ink-muted">Hosted by {event.colleges?.name ?? "a college on ParvLink"}</p>
       <dl className="mt-3 space-y-1.5 text-sm">
         <div className="flex gap-2">
           <dt>

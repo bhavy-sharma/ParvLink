@@ -35,7 +35,7 @@ export function StudentShell({ name, avatarUrl, showNav, showAdminLink, matchCou
       <header className="sticky top-0 z-20 border-b border-line bg-surface/95 backdrop-blur">
         <div className="mx-auto flex h-16 w-full max-w-5xl items-center gap-4 px-4 sm:px-6">
           <Logo href={showNav ? ROUTES.dashboard : ROUTES.onboarding} className="max-sm:hidden" />
-          <a href={showNav ? ROUTES.dashboard : ROUTES.onboarding} className="sm:hidden" aria-label="Campus Partner Finder">
+          <a href={showNav ? ROUTES.dashboard : ROUTES.onboarding} className="sm:hidden" aria-label="ParvLink">
             <PairMark />
           </a>
 

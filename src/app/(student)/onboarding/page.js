@@ -23,7 +23,7 @@ export default async function OnboardingPage() {
       />
       {colleges.length === 0 ? (
         <EmptyState title="No colleges are open yet">
-          Campus Partner Finder has not been switched on for any college so far. Check back soon — you can create your profile as soon as yours is added.
+          ParvLink has not been switched on for any college so far. Check back soon — you can create your profile as soon as yours is added.
         </EmptyState>
       ) : (
         <Panel as="div">

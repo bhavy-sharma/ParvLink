@@ -136,7 +136,7 @@ export function describeEligibility(event, collegeNames = new Map()) {
   const lines = [];
 
   if (rules.colleges?.mode === "all") {
-    lines.push({ label: "Colleges", text: "Students of every college on Campus Partner Finder." });
+    lines.push({ label: "Colleges", text: "Students of every college on ParvLink." });
   } else {
     const ids = rules.colleges?.ids ?? [];
     // Host college first, then the others alphabetically.

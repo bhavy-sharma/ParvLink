@@ -1,6 +1,6 @@
 # Security notes
 
-How Campus Partner Finder protects accounts and data now that it runs on MongoDB with its own sign-in, what was tested, and — plainly — what is weaker than before, what is not verified, and what remains to be hardened.
+How ParvLink protects accounts and data now that it runs on MongoDB with its own sign-in, what was tested, and — plainly — what is weaker than before, what is not verified, and what remains to be hardened.
 
 > **No professional penetration test or external audit has been done.** The checks described here were written and run by the same process that wrote the code. Nothing has been verified on MongoDB Atlas, with a real email provider, or on Vercel.
 

@@ -12,11 +12,11 @@ export default function PrivacyPage() {
   return (
     <LegalPage
       title="Privacy notice"
-      intro="What Campus Partner Finder collects about you, who can see it, how long it is kept and how to delete it."
+      intro="What ParvLink collects about you, who can see it, how long it is kept and how to delete it."
     >
       <LegalSection id="who" title="Who runs this service">
         <p>
-          Campus Partner Finder is operated by <OperatorName />. For any question about your data, write to <SupportEmail />.
+          ParvLink is operated by <OperatorName />. For any question about your data, write to <SupportEmail />.
         </p>
         <p>
           <Placeholder>TO BE COMPLETED BY THE OPERATOR: postal address, the law that applies, and the name of the person responsible for privacy requests or grievances, where the law requires one</Placeholder>

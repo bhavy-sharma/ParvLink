@@ -7,10 +7,10 @@ export const metadata = { title: "Terms of use" };
 
 export default function TermsPage() {
   return (
-    <LegalPage title="Terms of use" intro="The rules for using Campus Partner Finder. You agree to them when you create an account.">
+    <LegalPage title="Terms of use" intro="The rules for using ParvLink. You agree to them when you create an account.">
       <LegalSection id="service" title="What this is">
         <p>
-          Campus Partner Finder helps students find a partner or team-mate for college events. It is operated by <OperatorName />. It is a beta: features may change, and it may
+          ParvLink helps students find a partner or team-mate for college events. It is operated by <OperatorName />. It is a beta: features may change, and it may
           be unavailable at times.
         </p>
       </LegalSection>

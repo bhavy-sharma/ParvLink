@@ -35,7 +35,7 @@ const DB_MESSAGES = {
   profile_exists: "You already have a profile.",
   invalid_college: "That college is not available. Choose another one.",
   invalid_date_of_birth: "Check your date of birth — that date does not look right.",
-  under_age: `You must be ${MIN_AGE} or older to use Campus Partner Finder.`,
+  under_age: `You must be ${MIN_AGE} or older to use ParvLink.`,
   user_not_found: "No verified account uses that email address. Ask the person to register and confirm their email first.",
   cannot_change_own_role: "You cannot change your own role.",
   cannot_modify_super_admin: "That account is a Super Admin. Super Admins are managed from the database, not from this screen.",

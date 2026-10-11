@@ -23,7 +23,7 @@ export function EventDetails({ event, collegeNames, aside = null }) {
           <PhaseBadge event={event} />
         </p>
         <h1 className="mt-3 text-3xl font-bold sm:text-4xl">{event.title}</h1>
-        <p className="mt-2 text-ink-muted">Hosted by {collegeLabel(event.colleges) || "a college on Campus Partner Finder"}</p>
+        <p className="mt-2 text-ink-muted">Hosted by {collegeLabel(event.colleges) || "a college on ParvLink"}</p>
       </header>
 
       <div className="grid items-start gap-5 lg:grid-cols-[1fr_20rem]">

@@ -190,7 +190,7 @@ test("forgotten password: the answer is the same for any address, and only a rea
   expect(await recoveryLink(emails.divya)).toMatch(/^\/auth\/confirm\?token=[A-Za-z0-9_-]{43}&type=recovery$/);
   const mails = (await mailFor(emails.divya)).filter((mail) => mail.link?.endsWith("type=recovery"));
   expect(mails).toHaveLength(1);
-  expect(mails[0].subject).toBe("Choose a new password for Campus Partner Finder");
+  expect(mails[0].subject).toBe("Choose a new password for ParvLink");
   expect(mails[0].text).toMatch(/works once and expires in 60 minutes/);
   expect(await mailFor(`nobody-${runTag}@e2e.test`)).toEqual([]);
   // The database holds the token's hash only.

@@ -1,4 +1,4 @@
-# Campus Partner Finder
+# ParvLink
 
 Students find a partner or a team-mate for college events: join an event, see who else is looking, match when the interest is mutual, and plan in a private chat. Colleges' admins run the events and moderate reports. The platform supports many colleges; the first launch targets one.
 

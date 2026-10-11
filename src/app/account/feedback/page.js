@@ -11,7 +11,7 @@ export default async function FeedbackPage() {
     <div className="space-y-6">
       <PageHeader
         title="Send feedback"
-        description="Tell the team what is broken, confusing or missing. Only the people who run Campus Partner Finder read this — not other students, and not your college’s admins."
+        description="Tell the team what is broken, confusing or missing. Only the people who run ParvLink read this — not other students, and not your college’s admins."
       />
       <Notice />
       <Panel>

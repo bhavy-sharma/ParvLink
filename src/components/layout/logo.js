@@ -15,7 +15,7 @@ export function Logo({ href = "/", className }) {
   return (
     <Link href={href} className={cn("inline-flex items-center gap-2.5 rounded-full font-display text-lg font-bold text-ink", className)}>
       <PairMark />
-      <span>Campus Partner Finder</span>
+      <span>ParvLink</span>
     </Link>
   );
 }

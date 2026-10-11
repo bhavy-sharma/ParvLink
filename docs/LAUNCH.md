@@ -1,6 +1,6 @@
 # Controlled beta launch
 
-How to take Campus Partner Finder from "deployed" to "a limited pilot at one college", and how to operate and roll it back. The application supports many colleges; the pilot simply lists one.
+How to take ParvLink from "deployed" to "a limited pilot at one college", and how to operate and roll it back. The application supports many colleges; the pilot simply lists one.
 
 > **Status of this repository: not launch-ready until the gates at the end of this file are checked on the real installation.** Local builds and tests pass. No MongoDB Atlas cluster, no real email provider and no Vercel deployment have been used; nobody has verified email delivery to real mailboxes, live chat updates on the hosting platform, backups or the behaviour on real phones. Opening registration is the owner's decision, not something the code does.
 

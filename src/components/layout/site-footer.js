@@ -7,7 +7,7 @@ export function SiteFooter({ signedIn = false, className }) {
   return (
     <footer className={cn("mx-auto w-full max-w-5xl px-5 py-6 text-sm text-ink-muted", className)}>
       <nav aria-label="About this site" className="flex flex-wrap items-center gap-x-5 gap-y-2">
-        <span>Campus Partner Finder</span>
+        <span>ParvLink</span>
         <Link href={ROUTES.privacy} className="underline hover:text-ink">
           Privacy
         </Link>

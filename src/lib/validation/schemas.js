@@ -171,7 +171,7 @@ const dateOfBirth = z
   .refine((value) => {
     const age = ageOn(value);
     return age === null || age < 0 || age > MAX_AGE || age >= MIN_AGE;
-  }, `You must be ${MIN_AGE} or older to use Campus Partner Finder.`);
+  }, `You must be ${MIN_AGE} or older to use ParvLink.`);
 
 export const profileCreateSchema = z.object({
   firstName,
