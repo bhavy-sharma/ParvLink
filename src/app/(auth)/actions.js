@@ -310,3 +310,102 @@ export async function resetPasswordAction(prevState, formData) {
     };
   }
 }
+
+
+// ============================================================================
+// RESEND VERIFICATION EMAIL ACTION
+// ============================================================================
+export async function resendVerificationAction(prevState, formData) {
+  const email = formData.get("email")?.toString().trim().toLowerCase();
+
+  if (!email) {
+    return {
+      status: "error",
+      message: "Email zaroori hai!",
+      fieldErrors: { email: "Email required" },
+      values: { email: "" }
+    };
+  }
+
+  try {
+    await connectDb();
+
+    // 1. User dhundho
+    const user = await User.findOne({ email });
+    
+    // Security: User nahi hai ya already verified hai, tab bhi same message dikhao
+    if (!user) {
+      return {
+        status: "success",
+        message: "Agar ye email registered hai, toh aapko verification link mil jayega.",
+        fieldErrors: {},
+        values: { email: "" }
+      };
+    }
+
+    if (user.email_confirmed_at) {
+      return {
+        status: "success",
+        message: "Ye email pehle se verified hai. Aap login kar sakte ho.",
+        fieldErrors: {},
+        values: { email: "" }
+      };
+    }
+
+    // 2. Purane verify_email tokens delete karo
+    await AuthToken.deleteMany({
+      user_id: user._id,
+      kind: "verify_email"
+    });
+
+    // 3. Naya verification token generate karo
+    const rawToken = crypto.randomBytes(32).toString("hex");
+    const token_hash = crypto.createHash("sha256").update(rawToken).digest("hex");
+
+    await AuthToken.create({
+      user_id: user._id,
+      kind: "verify_email",
+      token_hash,
+      expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+    });
+
+    // 4. Verification email bhejo
+    const verifyUrl = `${process.env.NEXT_PUBLIC_APP_URL}/verify-email?token=${rawToken}`;
+    
+    try {
+      await sendMail({
+        to: email,
+        subject: "Verify your email — Campus Partner",
+        html: `
+          <div style="font-family: Arial; padding: 20px;">
+            <h2>Email Verification 📧</h2>
+            <p>Apna email verify karne ke liye neeche click karo:</p>
+            <a href="${verifyUrl}" style="background: #4F46E5; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; display: inline-block;">
+              Verify Email
+            </a>
+            <p style="color: #999; margin-top: 16px;">Ye link 24 ghante me expire ho jayega.</p>
+            <p style="color: #666;">Agar aapne ye request nahi ki thi, toh is email ko ignore kar do.</p>
+          </div>
+        `,
+      });
+    } catch (emailErr) {
+      console.error("❌ RESEND EMAIL ERROR:", emailErr.message);
+    }
+
+    return {
+      status: "success",
+      message: "Agar ye email registered hai, toh aapko verification link mil jayega.",
+      fieldErrors: {},
+      values: { email: "" }
+    };
+
+  } catch (err) {
+    console.error("❌ [auth.resendVerification] FULL ERROR:", err);
+    return {
+      status: "error",
+      message: "Kuch galat ho gaya. Dobara try karo.",
+      fieldErrors: {},
+      values: { email: email || "" }
+    };
+  }
+}
