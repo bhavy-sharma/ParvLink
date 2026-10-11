@@ -9,13 +9,12 @@ import { verifyEmailAction } from "../actions";
 
 export const metadata = { title: "Confirm your email" };
 
-// ✅ BUILD FIX: Next.js ko force karo ki ye page prerender nahi hoga.
-// Kyunki isme DB connection (verifyEmailAction) aur cookies (readPendingEmail) use ho rahe hain.
-export const dynamic = "force-dynamic";
+// ✅ "force-dynamic" hata diya gaya hai kyunki ye cacheComponents ke saath incompatible hai.
+// Next.js khud hi is page ko dynamic maan lega kyunki hum "searchParams" ko await kar rahe hain.
 
 export default async function VerifyEmailPage({ searchParams }) {
-  // Next.js 14 (object) aur Next.js 15 (Promise) dono ke liye safe resolution
-  const params = await Promise.resolve(searchParams);
+  // Next.js 15 compatible: searchParams ek Promise hai, isliye await karna zaroori hai
+  const params = await searchParams;
   const token = params?.token;
 
   // ✅ Agar URL me token hai, toh verification handle karo
@@ -104,7 +103,7 @@ async function VerifyTokenBody({ token }) {
   );
 }
 
-// ✅ Tumhara original component
+// ✅ Tumhara original component (bina kisi change ke)
 async function VerifyEmailBody() {
   const email = await readPendingEmail();
   return (
