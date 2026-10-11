@@ -1,7 +1,6 @@
 "use client";
 
 import { useActionState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { FormMessage } from "@/components/forms/form-message";
 import { SubmitButton } from "@/components/forms/submit-button";
 import { Field, Input } from "@/components/ui/field";
@@ -12,26 +11,20 @@ import { loginAction } from "../actions";
 
 export function LoginForm({ next = "" }) {
   const [state, formAction] = useActionState(loginAction, INITIAL_FORM_STATE);
-  const router = useRouter();
 
+  // ✅ 100% Guaranteed Redirect Logic
   useEffect(() => {
     if (state?.status === "success") {
-      // Client-side navigation try karo
-      const targetUrl = next || "/dashboard";
-      
-      // Pehle Next.js router try karo
-      router.push(targetUrl);
-      
-      // Fallback: Agar router kaam na kare toh 500ms baad direct redirect
-      setTimeout(() => {
-        window.location.href = targetUrl;
-      }, 500);
+      // window.location.href use karne se Next.js router ke kisi bhi bug se bacha ja sakta hai.
+      // Ye ek full page reload karega aur naya session properly load hoga.
+      window.location.href = next || "/dashboard";
     }
-  }, [state?.status, next, router]);
+  }, [state?.status, next]);
 
   return (
     <form action={formAction} className="space-y-4" noValidate>
       <FormMessage state={state} />
+      
       {next ? <input type="hidden" name="next" value={next} /> : null}
       
       <Field id="email" label="Email" error={state?.fieldErrors?.email}>
