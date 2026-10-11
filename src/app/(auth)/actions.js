@@ -1,11 +1,18 @@
 "use server";
 
 import { connectDb } from "@/lib/db/connection";
-import { User, AuthToken, Session } from "@/lib/db/models"; // ✅ Session add kiya
+import { User, AuthToken } from "@/lib/db/models";
 import { sendMail } from "@/lib/mail/mailer"; // Tumhare path ke hisaab se
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
-import { cookies } from "next/headers"; // ✅ cookies add kiya
+import { cookies } from "next/headers";
+import { SESSION_COOKIE, sessionCookieOptions } from "@/lib/auth/cookies";
+import { clientIp } from "@/lib/auth/request";
+import { logServerError } from "@/lib/auth/errors";
+import { homeForRole, safeNextPath } from "@/lib/auth/routes";
+import { destroySession, login as authenticate } from "@/lib/services/auth";
+import { formError } from "@/lib/form-state";
+import { fieldErrors, loginSchema } from "@/lib/validation/schemas";
 
 // ============================================================================
 // 1. REGISTER ACTION
@@ -76,95 +83,50 @@ export async function registerAction(prevState, formData) {
 }
 
 // ============================================================================
-// LOGIN ACTION (Fixed - Session & Cookie properly create hoga)
-// ============================================================================
 export async function loginAction(prevState, formData) {
-  const email = formData.get("email")?.toString().trim().toLowerCase();
-  const password = formData.get("password")?.toString();
-
-  if (!email || !password) {
-    return { 
-      status: "error", 
-      message: "Email aur password dono zaroori hain!", 
-      fieldErrors: { 
-        email: !email ? "Email required" : undefined,
-        password: !password ? "Password required" : undefined
-      },
-      values: { email: email || "" }
-    };
+  const emailValue = formData.get("email");
+  const values = { email: typeof emailValue === "string" ? emailValue : "" };
+  const parsed = loginSchema.safeParse({
+    email: emailValue,
+    password: formData.get("password"),
+  });
+  if (!parsed.success) {
+    return formError("Check the highlighted fields.", {
+      fieldErrors: fieldErrors(parsed.error),
+      values,
+    });
   }
 
   try {
-    await connectDb();
-
-    // 1. Find user
-    const user = await User.findOne({ email });
-    if (!user || !user.password_hash) {
-      return { 
-        status: "error", 
-        message: "Invalid email ya password!", 
+    const result = await authenticate({ ...parsed.data, ip: await clientIp() });
+    if (result.status === "invalid") {
+      return formError("That email and password do not match an account. Check both and try again.", {
         fieldErrors: { email: "Invalid credentials" },
-        values: { email: email || "" }
-      };
+        values,
+      });
+    }
+    if (result.status === "unverified") {
+      return formError("Confirm your email address before logging in.", {
+        fieldErrors: { email: "Confirm your email first." },
+        values,
+      });
+    }
+    if (result.status === "limited") {
+      return formError("Too many attempts. Wait a few minutes, then try again.", { values });
     }
 
-    // 2. Verify password
-    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
-    if (!isPasswordValid) {
-      return { 
-        status: "error", 
-        message: "Invalid email ya password!", 
-        fieldErrors: { password: "Invalid credentials" },
-        values: { email: email || "" }
-      };
-    }
-
-    // 3. Create Session Token
-    const sessionToken = crypto.randomBytes(32).toString("hex");
-    const token_hash = crypto.createHash("sha256").update(sessionToken).digest("hex");
-    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
-
-    // 4. Session database me save karo
-    await Session.create({
-      user_id: user._id,
-      token_hash,
-      expires_at: expiresAt,
-      last_seen_at: new Date(),
-    });
-
-    console.log("✅ Session created in DB for user:", user._id);
-
-    // 5. Cookie set karo (Ye sabse important step hai!)
     const cookieStore = await cookies();
-    
-    // Cookie ko properly set karo - development aur production dono ke liye
-    cookieStore.set("session_token", sessionToken, {
-      httpOnly: true,
-      secure: false, // Development me false rakho, production me true
-      sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60, // 7 days in seconds
-      path: "/",
-      domain: undefined, // Localhost ke liye domain mat specify karo
-    });
-
-    console.log("✅ Cookie set successfully!");
-
-    // 6. Return success
+    cookieStore.set(SESSION_COOKIE, result.sessionToken, sessionCookieOptions());
     return {
       status: "success",
-      message: "Login successful!",
+      message: "Signed in.",
       fieldErrors: {},
-      values: { email: "" }
+      values: {},
+      redirectTo: safeNextPath(formData.get("next"), homeForRole(result.role)),
     };
-
-  } catch (err) {
-    console.error("❌ [auth.login] FULL ERROR:", err);
-    return {
-      status: "error",
-      message: "Login failed. Dobara try karo.",
-      fieldErrors: {},
-      values: { email: email || "" }
-    };
+  } catch (error) {
+    logServerError("auth.login", error);
+    return formError("Login failed. Please try again.", { values });
   }
 }
 
@@ -306,32 +268,14 @@ export async function resendVerificationAction(prevState, formData) {
 export async function logoutAction(prevState, formData) {
   try {
     const cookieStore = await cookies();
-    const sessionToken = cookieStore.get("session_token")?.value;
+    const sessionToken = cookieStore.get(SESSION_COOKIE)?.value;
+    cookieStore.delete(SESSION_COOKIE);
+    if (sessionToken) await destroySession(sessionToken);
 
-    if (sessionToken) {
-      try {
-        await connectDb();
-        const token_hash = crypto.createHash("sha256").update(sessionToken).digest("hex");
-        await Session.deleteOne({ token_hash });
-        console.log("✅ Session deleted from database");
-      } catch (dbErr) {
-        console.error("⚠️ Database se session delete karne me error:", dbErr.message);
-      }
-    }
-
-    cookieStore.set("session_token", "", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 0,
-      path: "/",
-    });
-
-    console.log("✅ Logout successful");
-    return { status: "success", message: "Logout successful!", fieldErrors: {}, values: {} };
-  } catch (err) {
-    console.error("❌ [auth.logout] FULL ERROR:", err);
-    return { status: "error", message: "Logout failed. Dobara try karo.", fieldErrors: {}, values: {} };
+    return { status: "success", message: "Signed out.", fieldErrors: {}, values: {} };
+  } catch (error) {
+    logServerError("auth.logout", error);
+    return { status: "error", message: "Logout failed. Please try again.", fieldErrors: {}, values: {} };
   }
 }
 

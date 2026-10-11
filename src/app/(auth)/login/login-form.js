@@ -18,23 +18,9 @@ export function LoginForm({ next = "" }) {
   const hasRedirected = useRef(false);
 
   useEffect(() => {
-    // 🔍 DEBUGGING: Console me dekhne ke liye ki state actually kya hai
-    console.log("🔍 CURRENT FORM STATE:", state);
-
     if (state?.status === "success" && !hasRedirected.current) {
-      hasRedirected.current = true; // Flag set kar do taaki dobara na chale
-      
-      const targetUrl = next || "/dashboard";
-      console.log("🚀 Redirecting to:", targetUrl);
-
-      // Method 1: Next.js Router (Fast, no page reload)
-      router.push(targetUrl);
-
-      // Method 2: Hard Redirect Fallback (Agar router 200ms me kaam na kare)
-      setTimeout(() => {
-        console.log("⚠️ Router slow, forcing window.location redirect...");
-        window.location.href = targetUrl;
-      }, 200);
+      hasRedirected.current = true;
+      router.replace(state.redirectTo || next || ROUTES.dashboard);
     }
   }, [state, next, router]);
 
