@@ -1,0 +1,6 @@
+allowBuilds:
+  unrs-resolver: true
+minimumReleaseAgeExclude:
+  - mailparser@3.9.38
+  - nodemailer@10.1.0
+  - smtp-server@3.19.21
