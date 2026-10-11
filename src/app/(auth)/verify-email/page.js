@@ -5,13 +5,17 @@ import { Skeleton } from "@/components/ui/misc";
 import { readPendingEmail } from "@/lib/auth/pending-email";
 import { ROUTES } from "@/lib/auth/routes";
 import { ResendForm } from "./resend-form";
-import { verifyEmailAction } from "../actions"; // ✅ Action import kiya
+import { verifyEmailAction } from "../actions";
 
 export const metadata = { title: "Confirm your email" };
 
-// Next.js 15 compatibility ke liye async function banaya
+// ✅ BUILD FIX: Next.js ko force karo ki ye page prerender nahi hoga.
+// Kyunki isme DB connection (verifyEmailAction) aur cookies (readPendingEmail) use ho rahe hain.
+export const dynamic = "force-dynamic";
+
 export default async function VerifyEmailPage({ searchParams }) {
-  const params = await searchParams;
+  // Next.js 14 (object) aur Next.js 15 (Promise) dono ke liye safe resolution
+  const params = await Promise.resolve(searchParams);
   const token = params?.token;
 
   // ✅ Agar URL me token hai, toh verification handle karo
@@ -100,7 +104,7 @@ async function VerifyTokenBody({ token }) {
   );
 }
 
-// ✅ Tumhara original component, bilkul waisa hi rakha hai
+// ✅ Tumhara original component
 async function VerifyEmailBody() {
   const email = await readPendingEmail();
   return (
