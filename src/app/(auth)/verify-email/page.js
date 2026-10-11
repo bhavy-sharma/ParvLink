@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
+import { cookies } from "next/headers"; // ✅ 1. Import cookies
 import { AuthCard } from "@/components/forms/auth-card";
 import { Skeleton } from "@/components/ui/misc";
 import { readPendingEmail } from "@/lib/auth/pending-email";
@@ -9,11 +10,11 @@ import { verifyEmailAction } from "../actions";
 
 export const metadata = { title: "Confirm your email" };
 
-// ✅ "force-dynamic" hata diya gaya hai kyunki ye cacheComponents ke saath incompatible hai.
-// Next.js khud hi is page ko dynamic maan lega kyunki hum "searchParams" ko await kar rahe hain.
-
 export default async function VerifyEmailPage({ searchParams }) {
-  // Next.js 15 compatible: searchParams ek Promise hai, isliye await karna zaroori hai
+  // ✅ 2. FORCE DYNAMIC: Ye line Next.js ko batati hai ki ye page request-time data use karta hai.
+  // Isse Next.js build ke time isko prerender NAHI karega, aur config error bhi nahi aayega!
+  await cookies();
+
   const params = await searchParams;
   const token = params?.token;
 
@@ -103,7 +104,7 @@ async function VerifyTokenBody({ token }) {
   );
 }
 
-// ✅ Tumhara original component (bina kisi change ke)
+// ✅ Tumhara original component (ab ye build time par run hi nahi hoga, isliye error nahi aayega)
 async function VerifyEmailBody() {
   const email = await readPendingEmail();
   return (
