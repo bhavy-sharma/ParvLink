@@ -76,33 +76,55 @@ export async function registerAction(prevState, formData) {
 }
 
 // ============================================================================
-// 2. LOGIN ACTION
+// LOGIN ACTION (Fixed - Session & Cookie properly create hoga)
 // ============================================================================
 export async function loginAction(prevState, formData) {
   const email = formData.get("email")?.toString().trim().toLowerCase();
   const password = formData.get("password")?.toString();
 
   if (!email || !password) {
-    return { status: "error", message: "Email aur password dono zaroori hain!", fieldErrors: { email: !email ? "Email required" : undefined, password: !password ? "Password required" : undefined }, values: { email: email || "" } };
+    return { 
+      status: "error", 
+      message: "Email aur password dono zaroori hain!", 
+      fieldErrors: { 
+        email: !email ? "Email required" : undefined,
+        password: !password ? "Password required" : undefined
+      },
+      values: { email: email || "" }
+    };
   }
 
   try {
     await connectDb();
 
+    // 1. Find user
     const user = await User.findOne({ email });
     if (!user || !user.password_hash) {
-      return { status: "error", message: "Invalid email ya password!", fieldErrors: { email: "Invalid credentials" }, values: { email: email || "" } };
+      return { 
+        status: "error", 
+        message: "Invalid email ya password!", 
+        fieldErrors: { email: "Invalid credentials" },
+        values: { email: email || "" }
+      };
     }
 
+    // 2. Verify password
     const isPasswordValid = await bcrypt.compare(password, user.password_hash);
     if (!isPasswordValid) {
-      return { status: "error", message: "Invalid email ya password!", fieldErrors: { password: "Invalid credentials" }, values: { email: email || "" } };
+      return { 
+        status: "error", 
+        message: "Invalid email ya password!", 
+        fieldErrors: { password: "Invalid credentials" },
+        values: { email: email || "" }
+      };
     }
 
+    // 3. Create Session Token
     const sessionToken = crypto.randomBytes(32).toString("hex");
     const token_hash = crypto.createHash("sha256").update(sessionToken).digest("hex");
-    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
 
+    // 4. Session database me save karo
     await Session.create({
       user_id: user._id,
       token_hash,
@@ -110,20 +132,39 @@ export async function loginAction(prevState, formData) {
       last_seen_at: new Date(),
     });
 
+    console.log("✅ Session created in DB for user:", user._id);
+
+    // 5. Cookie set karo (Ye sabse important step hai!)
     const cookieStore = await cookies();
+    
+    // Cookie ko properly set karo - development aur production dono ke liye
     cookieStore.set("session_token", sessionToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: false, // Development me false rakho, production me true
       sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60,
+      maxAge: 7 * 24 * 60 * 60, // 7 days in seconds
       path: "/",
+      domain: undefined, // Localhost ke liye domain mat specify karo
     });
 
-    console.log("✅ Login successful for:", user.email);
-    return { status: "success", message: "Login successful!", fieldErrors: {}, values: { email: "" } };
+    console.log("✅ Cookie set successfully!");
+
+    // 6. Return success
+    return {
+      status: "success",
+      message: "Login successful!",
+      fieldErrors: {},
+      values: { email: "" }
+    };
+
   } catch (err) {
     console.error("❌ [auth.login] FULL ERROR:", err);
-    return { status: "error", message: "Login failed. Dobara try karo.", fieldErrors: {}, values: { email: email || "" } };
+    return {
+      status: "error",
+      message: "Login failed. Dobara try karo.",
+      fieldErrors: {},
+      values: { email: email || "" }
+    };
   }
 }
 
