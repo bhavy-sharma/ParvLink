@@ -409,3 +409,57 @@ export async function resendVerificationAction(prevState, formData) {
     };
   }
 }
+
+// ============================================================================
+// LOGOUT ACTION
+// ============================================================================
+export async function logoutAction(prevState, formData) {
+  try {
+    const cookieStore = await cookies();
+    const sessionToken = cookieStore.get("session_token")?.value;
+
+    // Agar session token hai, toh database se bhi delete karo
+    if (sessionToken) {
+      try {
+        await connectDb();
+        
+        const token_hash = crypto.createHash("sha256").update(sessionToken).digest("hex");
+        
+        // Session database se delete karo
+        await Session.deleteOne({ token_hash });
+        
+        console.log("✅ Session deleted from database");
+      } catch (dbErr) {
+        console.error("⚠️ Database se session delete karne me error:", dbErr.message);
+        // Error aaye toh bhi logout proceed karo (cookie toh delete hogi)
+      }
+    }
+
+    // Session cookie delete karo
+    cookieStore.set("session_token", "", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 0, // Immediately expire
+      path: "/",
+    });
+
+    console.log("✅ Logout successful");
+
+    return {
+      status: "success",
+      message: "Logout successful!",
+      fieldErrors: {},
+      values: {}
+    };
+
+  } catch (err) {
+    console.error("❌ [auth.logout] FULL ERROR:", err);
+    return {
+      status: "error",
+      message: "Logout failed. Dobara try karo.",
+      fieldErrors: {},
+      values: {}
+    };
+  }
+}
