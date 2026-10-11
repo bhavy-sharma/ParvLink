@@ -5,6 +5,10 @@
 
 import mongoose from "mongoose";
 import { MODELS } from "./models.js";
+import { setServers } from "node:dns"; // <-- ADD THIS: Node.js built-in DNS module
+
+// <-- ADD THIS: Force Node.js to use Cloudflare DNS (1.1.1.1) to fix SRV lookup issues
+setServers(["1.1.1.1", "1.0.0.1"]);
 
 // Survives hot reloads in development and is reused across invocations on
 // serverless platforms.
@@ -67,4 +71,4 @@ export function isDuplicateKey(error, field = null) {
   if (error?.code !== 11000) return false;
   if (!field) return true;
   return Object.keys(error.keyPattern ?? {}).includes(field) || String(error.message ?? "").includes(field);
-}
+} 

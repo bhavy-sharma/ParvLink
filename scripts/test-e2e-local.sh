@@ -69,7 +69,7 @@ export APP_URL="http://127.0.0.1:$APP_PORT"
 export SMTP_HOST="127.0.0.1"
 export SMTP_PORT="$SMTP_PORT_E2E"
 export SMTP_USER="" SMTP_PASS=""
-export EMAIL_FROM="Campus Partner Finder <no-reply@campus.test>"
+export EMAIL_FROM="Parv Link <no-reply@campus.test>"
 export E2E_BASE_URL="$APP_URL"
 export E2E_MAIL_API="http://127.0.0.1:$MAIL_API_PORT"
 export NEXT_TELEMETRY_DISABLED=1

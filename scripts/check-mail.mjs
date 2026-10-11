@@ -21,7 +21,7 @@ try {
   await verifyMailTransport();
   console.log("Connection and login: OK");
   if (to) {
-    await sendMail({ to, subject: "Campus Partner Finder — test message", text: "If you can read this, outgoing email works.", html: "<p>If you can read this, outgoing email works.</p>" });
+    await sendMail({ to, subject: "ParvLink — test message", text: "If you can read this, outgoing email works.", html: "<p>If you can read this, outgoing email works.</p>" });
     console.log(`Test message handed to the SMTP server for ${to}. Check the inbox (and spam).`);
   }
 } catch (error) {
