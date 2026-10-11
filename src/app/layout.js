@@ -1,5 +1,6 @@
 import "@fontsource-variable/figtree";
 import "@fontsource-variable/bricolage-grotesque";
+import Script from "next/script";
 import "./globals.css";
 
 export const metadata = {
@@ -16,6 +17,8 @@ export const viewport = {
   themeColor: "#3b2fb8",
 };
 
+
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="h-full antialiased">
@@ -28,6 +31,20 @@ export default function RootLayout({ children }) {
         </a>
         {children}
       </body>
+      <Script
+        id="google-analytics-init"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `window.dataLayer = window.dataLayer || [];
+function gtag(){window.dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-W9TXQ99V9X');`,
+        }}
+      />
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=G-W9TXQ99V9X"
+        strategy="afterInteractive"
+      />
     </html>
   );
 }
