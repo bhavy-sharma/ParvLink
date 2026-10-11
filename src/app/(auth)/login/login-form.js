@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { FormMessage } from "@/components/forms/form-message";
 import { SubmitButton } from "@/components/forms/submit-button";
 import { Field, Input } from "@/components/ui/field";
@@ -11,15 +12,31 @@ import { loginAction } from "../actions";
 
 export function LoginForm({ next = "" }) {
   const [state, formAction] = useActionState(loginAction, INITIAL_FORM_STATE);
+  const router = useRouter();
+  
+  // ✅ Ye ensure karega ki redirect sirf 1 baar ho, infinite loop na bane
+  const hasRedirected = useRef(false);
 
-  // ✅ 100% Guaranteed Redirect Logic
   useEffect(() => {
-    if (state?.status === "success") {
-      // window.location.href use karne se Next.js router ke kisi bhi bug se bacha ja sakta hai.
-      // Ye ek full page reload karega aur naya session properly load hoga.
-      window.location.href = next || "/dashboard";
+    // 🔍 DEBUGGING: Console me dekhne ke liye ki state actually kya hai
+    console.log("🔍 CURRENT FORM STATE:", state);
+
+    if (state?.status === "success" && !hasRedirected.current) {
+      hasRedirected.current = true; // Flag set kar do taaki dobara na chale
+      
+      const targetUrl = next || "/dashboard";
+      console.log("🚀 Redirecting to:", targetUrl);
+
+      // Method 1: Next.js Router (Fast, no page reload)
+      router.push(targetUrl);
+
+      // Method 2: Hard Redirect Fallback (Agar router 200ms me kaam na kare)
+      setTimeout(() => {
+        console.log("⚠️ Router slow, forcing window.location redirect...");
+        window.location.href = targetUrl;
+      }, 200);
     }
-  }, [state?.status, next]);
+  }, [state, next, router]);
 
   return (
     <form action={formAction} className="space-y-4" noValidate>
