@@ -14,17 +14,24 @@ export function LoginForm({ next = "" }) {
   const [state, formAction] = useActionState(loginAction, INITIAL_FORM_STATE);
   const router = useRouter();
 
-  // ✅ Jab bhi state "success" ho, dashboard (ya next page) par redirect kar do
   useEffect(() => {
     if (state?.status === "success") {
-      router.push(next || "/dashboard");
+      // Client-side navigation try karo
+      const targetUrl = next || "/dashboard";
+      
+      // Pehle Next.js router try karo
+      router.push(targetUrl);
+      
+      // Fallback: Agar router kaam na kare toh 500ms baad direct redirect
+      setTimeout(() => {
+        window.location.href = targetUrl;
+      }, 500);
     }
   }, [state?.status, next, router]);
 
   return (
     <form action={formAction} className="space-y-4" noValidate>
       <FormMessage state={state} />
-      
       {next ? <input type="hidden" name="next" value={next} /> : null}
       
       <Field id="email" label="Email" error={state?.fieldErrors?.email}>
